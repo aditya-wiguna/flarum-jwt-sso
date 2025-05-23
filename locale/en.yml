@@ -1,0 +1,26 @@
+jwt-sso:
+  admin:
+    main_site_url_label: Main Site URL
+    main_site_url_help: The base URL of your main authentication site
+    login_url_label: Login URL
+    login_url_help: The URL users will be redirected to for authentication
+    logout_url_label: Logout URL
+    logout_url_help: The URL users will be redirected to after logout (optional)
+    secret_key_label: JWT Secret Key
+    secret_key_help: The secret key used to verify JWT tokens from your main site
+    issuer_label: JWT Issuer
+    issuer_help: Expected issuer (iss) claim in JWT tokens (optional)
+    default_groups_label: Default Groups
+    default_groups_help: Comma-separated group IDs to assign to new users
+    override_login_label: Override Default Login
+    override_login_help: Replace Flarum's login with SSO login only
+    
+  forum:
+    login_with_sso: Login with SSO
+    logout_redirect: Redirecting to logout...
+    
+    error:
+      missing_token: Authentication failed - no token received
+      invalid_state: Authentication failed - invalid state parameter
+      invalid_token: Authentication failed - invalid or expired token
+      generic: Authentication error - {error}

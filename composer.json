@@ -1,0 +1,27 @@
+{
+  "name": "aditya-wiguna/flarum-jwt-sso",
+  "description": "JWT-based SSO extension for Flarum",
+  "type": "flarum-extension",
+  "keywords": ["flarum", "extension", "sso", "jwt"],
+  "license": "MIT",
+  "require": {
+    "flarum/core": "^1.0",
+    "firebase/php-jwt": "^6.0"
+  },
+  "extra": {
+    "flarum-extension": {
+      "title": "JWT SSO",
+      "category": "authentication",
+      "icon": {
+        "name": "fas fa-sign-in-alt",
+        "backgroundColor": "#e74c3c",
+        "color": "#fff"
+      }
+    }
+  },
+  "autoload": {
+    "psr-4": {
+      "AdityaWiguna\\JwtSSO\\": "src/"
+    }
+  }
+}
