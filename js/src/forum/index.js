@@ -26,7 +26,7 @@ app.initializers.add('aditya-wiguna-jwt-sso', () => {
 
   // Initialize the extension functionality
   const initializeSSO = () => {
-    const overrideLogin = getForumAttribute('jwt-sso.overrideLogin', false);
+    const overrideLogin = getForumAttribute('jwt-sso.override_login', false);
     
     // Override login button behavior
     if (overrideLogin) {
