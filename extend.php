@@ -21,5 +21,10 @@ return [
 
     (new Extend\Settings())
         ->serializeToForum('jwt-sso.mainSiteUrl', 'jwt-sso.main_site_url')
-        ->serializeToForum('jwt-sso.loginUrl', 'jwt-sso.login_url'),
+        ->serializeToForum('jwt-sso.loginUrl', 'jwt-sso.login_url')
+        ->serializeToForum('jwt-sso.logoutUrl', 'jwt-sso.logout_url')
+        ->serializeToForum('jwt-sso.overrideLogin', 'jwt-sso.override_login', function($value) {
+            return (bool) $value; // Ensure it's a boolean
+        }),
+
 ];
