@@ -110,7 +110,8 @@ class CallbackController implements RequestHandlerInterface
             $this->authenticator->logIn($session, $accessToken);
 
             // Redirect to the intended URL or home
-            return new RedirectResponse('/');
+            $forumUrl = $this->settings->get('url') ?: 'https://forum.vietvan.ca';
+            return new RedirectResponse($forumUrl);
         } catch (\Exception $e) {
             $this->logger->error('SSO authentication error', [
                 'error' => $e->getMessage(),
