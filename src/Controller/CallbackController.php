@@ -109,10 +109,25 @@ class CallbackController implements RequestHandlerInterface
             );
             $this->authenticator->logIn($session, $accessToken);
 
-            // Redirect to the intended URL or home
+            // Get the original URL from session, then clear it
+            $redirectAfterLogin = $session->get('jwt_sso_redirect_after_login');
+            $session->remove('jwt_sso_redirect_after_login');
+            
+            // Redirect to the original page or forum home
             $forumUrl = $this->settings->get('url') ?: 'https://forum.vietvan.ca';
-            return new RedirectResponse($forumUrl);
-        } catch (\Exception $e) {
+            $finalRedirectUrl = $redirectAfterLogin ?: $forumUrl;
+            
+            // Validate the redirect URL is safe (same domain)
+            $forumHost = parse_url($forumUrl, PHP_URL_HOST);
+            $redirectHost = parse_url($finalRedirectUrl, PHP_URL_HOST);
+            
+            if ($redirectHost && $redirectHost !== $forumHost) {
+                // If redirect URL is not from the forum domain, use forum home
+                $finalRedirectUrl = $forumUrl;
+            }
+            
+            return new RedirectResponse($finalRedirectUrl);
+        }  catch (\Exception $e) {
             $this->logger->error('SSO authentication error', [
                 'error' => $e->getMessage(),
                 'token_preview' => substr($token, 0, 20) . '...',

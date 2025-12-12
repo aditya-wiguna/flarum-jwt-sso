@@ -32,13 +32,6 @@ class LoginController implements RequestHandlerInterface
     {
         // Rate limiting
         $clientIp = $this->getClientIp($request);
-        //TODO: Enable rate limiting
-        // if (!$this->checkRateLimit($clientIp, 'login')) {
-        //     Log::warning('SSO login rate limit exceeded', ['ip' => $clientIp]);
-        //     throw new ValidationException([
-        //         'message' => 'Too many login attempts. Please try again later.'
-        //     ]);
-        // }
 
         $mainSiteUrl = $this->settings->get('jwt-sso.main_site_url');
         $loginUrl = $this->settings->get('jwt-sso.login_url');
@@ -59,6 +52,27 @@ class LoginController implements RequestHandlerInterface
         $session->put('jwt_sso_nonce', $nonce);
         $session->put('jwt_sso_timestamp', time());
 
+        // Capture the original page the user was on (from referer or query param)
+        $queryParams = $request->getQueryParams();
+        $originalUrl = $queryParams['redirect'] ?? null;
+        
+        if (!$originalUrl) {
+            // Try to get from referer header
+            $serverParams = $request->getServerParams();
+            $referer = $serverParams['HTTP_REFERER'] ?? null;
+            
+            // Only use referer if it's from the same forum domain
+            $forumUrl = $this->settings->get('url') ?: '';
+            if ($referer && strpos($referer, parse_url($forumUrl, PHP_URL_HOST)) !== false) {
+                $originalUrl = $referer;
+            }
+        }
+        
+        // Store the original URL in session for after SSO callback
+        if ($originalUrl) {
+            $session->put('jwt_sso_redirect_after_login', $originalUrl);
+        }
+
         // Build redirect URL with additional security parameters
         $redirectUrl = $loginUrl . '?' . http_build_query([
             'return_url' => $request->getUri()->getScheme() . '://' . 
@@ -68,8 +82,6 @@ class LoginController implements RequestHandlerInterface
             'nonce' => $nonce,
             'timestamp' => time()
         ]);
-
-        //Log::info('SSO login initiated', ['ip' => $clientIp]);
 
         return new RedirectResponse($redirectUrl);
     }
