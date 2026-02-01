@@ -22,6 +22,12 @@ app.initializers.add('aditya-wiguna-jwt-sso', () => {
       help: app.translator.trans('jwt-sso.admin.logout_url_help'),
     })
     .registerSetting({
+      setting: 'jwt-sso.backend_api_url',
+      type: 'url',
+      label: app.translator.trans('jwt-sso.admin.backend_api_url_label'),
+      help: app.translator.trans('jwt-sso.admin.backend_api_url_help'),
+    })
+    .registerSetting({
       setting: 'jwt-sso.secret_key',
       type: 'password',
       label: app.translator.trans('jwt-sso.admin.secret_key_label'),

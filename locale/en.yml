@@ -6,6 +6,8 @@ jwt-sso:
     login_url_help: The URL users will be redirected to for authentication
     logout_url_label: Logout URL
     logout_url_help: The URL users will be redirected to after logout (optional)
+    backend_api_url_label: Backend API URL
+    backend_api_url_help: The URL of your backend API for OAuth authentication (e.g., http://localhost:3001)
     secret_key_label: JWT Secret Key
     secret_key_help: The secret key used to verify JWT tokens from your main site
     issuer_label: JWT Issuer
