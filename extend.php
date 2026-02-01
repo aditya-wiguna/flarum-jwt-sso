@@ -3,6 +3,7 @@
 use Flarum\Extend;
 use AdityaWiguna\JwtSSO\Controller\LoginController;
 use AdityaWiguna\JwtSSO\Controller\CallbackController;
+use AdityaWiguna\JwtSSO\Controller\PopupCallbackController;
 use AdityaWiguna\JwtSSO\Controller\LogoutController;
 
 return [
@@ -17,6 +18,7 @@ return [
     (new Extend\Routes('forum'))
         ->get('/auth/sso/login', 'jwt-sso.login', LoginController::class)
         ->get('/auth/sso/callback', 'jwt-sso.callback', CallbackController::class)
+        ->get('/auth/sso/popup-callback', 'jwt-sso.popup-callback', PopupCallbackController::class)
         ->post('/auth/sso/logout', 'jwt-sso.logout', LogoutController::class),
 
     (new Extend\Settings())
