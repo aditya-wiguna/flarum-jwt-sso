@@ -106,8 +106,8 @@ class PopupCallbackController implements RequestHandlerInterface
      */
     protected function renderPopupResponse(bool $success, string $error = null, string $mainToken = null): ResponseInterface
     {
-        $forumUrl = $this->settings->get('url') ?: '';
-        $mainSiteUrl = $this->settings->get('jwt-sso.main_site_url') ?: 'https://vietvan.ca';
+        $forumUrl = rtrim($this->settings->get('url') ?: '', '/');
+        $mainSiteUrl = rtrim($this->settings->get('jwt-sso.main_site_url') ?: 'https://vietvan.ca', '/');
         
         if ($success) {
             // If we have a main token, redirect to main site to set the cookie first
