@@ -56,6 +56,7 @@ class PopupCallbackController implements RequestHandlerInterface
         $token = Arr::get($queryParams, 'token');
         $state = Arr::get($queryParams, 'state');
         $error = Arr::get($queryParams, 'sso_error');
+        $mainToken = Arr::get($queryParams, 'main_token');
 
         // If there's an error, show error page that closes popup
         if ($error) {
@@ -89,7 +90,8 @@ class PopupCallbackController implements RequestHandlerInterface
             ]);
 
             // Return HTML that closes popup and reloads parent
-            return $this->renderPopupResponse(true);
+            // Also pass main site token for cross-site authentication
+            return $this->renderPopupResponse(true, null, $mainToken);
 
         } catch (\Exception $e) {
             $this->logger->error('SSO popup authentication error', [
@@ -102,11 +104,19 @@ class PopupCallbackController implements RequestHandlerInterface
     /**
      * Render HTML response that handles popup close and parent reload
      */
-    protected function renderPopupResponse(bool $success, string $error = null): ResponseInterface
+    protected function renderPopupResponse(bool $success, string $error = null, string $mainToken = null): ResponseInterface
     {
         $forumUrl = $this->settings->get('url') ?: '';
+        $mainSiteUrl = $this->settings->get('jwt-sso.main_site_url') ?: 'https://vietvan.ca';
         
         if ($success) {
+            // If we have a main token, redirect to main site to set the cookie first
+            // Then main site will redirect back with a success message
+            if ($mainToken) {
+                $syncUrl = $mainSiteUrl . '/auth/sso/sync?token=' . urlencode($mainToken) . '&return_url=' . urlencode($forumUrl);
+                return new RedirectResponse($syncUrl);
+            }
+            
             $html = <<<HTML
 <!DOCTYPE html>
 <html>
